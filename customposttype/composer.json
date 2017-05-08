@@ -1,6 +1,6 @@
 {
-    "name": "garung/customize",
-    "description": "Create customize for wordpres",
+    "name": "garung/custompostype",
+    "description": "Create custom post type for wordpres",
     "type": "library",
     "require": {
         "php": ">5.4"
