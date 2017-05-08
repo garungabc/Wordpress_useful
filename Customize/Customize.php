@@ -29,12 +29,10 @@ class Customize
         global $wp_customize;
         $this->wp_customize = $wp_customize;
         $this->fields       = $fields;
-        $this->AddSeting($this->fields);
-        $this->AddSection($this->fields);
-        $this->AddControl($this->fields);
+        add_action( 'customize_register', array( $this, 'create_customize' ) );
     }
 
-    public function AddSeting($fields)
+    public function AddSetting($fields)
     {
     	if(empty($fields['default'])){
     		$fields['default'] = '';
@@ -78,7 +76,7 @@ class Customize
     	$this->wp_customize->add_control(
     		new WP_Customize_Control(
     			$this->wp_customize,
-    			$fields['control_id'],
+    			$fields['setting_id'],
     			[
     				'label' => $fields['label_control'],
     				'section' => $fields['section_id'],
@@ -87,4 +85,14 @@ class Customize
     		)
     	);
     }
+
+    public function create_customize() {
+        $this->AddSetting($this->fields);
+        $this->AddSection($this->fields);
+        $this->AddControl($this->fields);
+    }
+
+    // public function add_setting($section, $fields) {
+
+    // }
 }
