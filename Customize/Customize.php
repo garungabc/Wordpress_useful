@@ -10,11 +10,10 @@ class Customize
      * @version  1.0 
      * setting_id
      * section_id
-     * control_id
      * 
      * title_section
      * 
-     * label_control
+     * label_setting
      * type
      * priority
      * 
@@ -32,7 +31,7 @@ class Customize
         add_action( 'customize_register', array( $this, 'create_customize' ) );
     }
 
-    public function AddSetting($fields)
+    protected function Setting($fields)
     {
     	if(empty($fields['default'])){
     		$fields['default'] = '';
@@ -49,7 +48,7 @@ class Customize
         );
     }
 
-    public function AddSection($fields)
+    protected function Section($fields)
     {
     	if(empty($fields['title_section'])){
     		$fields['title_section'] = 'Mặc định';
@@ -66,9 +65,9 @@ class Customize
         );
     }
 
-    public function AddControl($fields){
-    	if(empty($fields['label_control'])){
-    		$fields['label_control'] = 'Mặc định';
+    protected function Control($fields){
+    	if(empty($fields['label_setting'])){
+    		$fields['label_setting'] = 'Mặc định';
     	}
     	if(empty($fields['type'])){
     		$fields['type'] = 'text';
@@ -78,7 +77,7 @@ class Customize
     			$this->wp_customize,
     			$fields['setting_id'],
     			[
-    				'label' => $fields['label_control'],
+    				'label' => $fields['label_setting'],
     				'section' => $fields['section_id'],
     				'type' => $fields['type']
     			]
@@ -87,12 +86,8 @@ class Customize
     }
 
     public function create_customize() {
-        $this->AddSetting($this->fields);
-        $this->AddSection($this->fields);
-        $this->AddControl($this->fields);
+        $this->Setting($this->fields);
+        $this->Section($this->fields);
+        $this->Control($this->fields);
     }
-
-    // public function add_setting($section, $fields) {
-
-    // }
 }
