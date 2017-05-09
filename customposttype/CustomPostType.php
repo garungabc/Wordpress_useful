@@ -24,7 +24,8 @@ class CustomPostType
 			$this->fields['orderby'] = 'term_order';
 		}
 		$this->createTaxonomy();
-		$this->createPostType();
+		add_action('init', [$this, 'createPostType']);
+		add_filter("manage_edit-security_columns", [$this, "security_edit_columns"]);
 	}
 
 	public function createTaxonomy() {
@@ -35,14 +36,14 @@ class CustomPostType
 		    'hierarchical'                  => true,
 		    'show_ui'                       => true,
 		    'show_in_nav_menus'             => true,
-		    'args'                          => array( 'orderby' => $fields['orderby'] ),
+		    'args'                          => array( 'orderby' => $this->fields['orderby'] ),
 	        'rewrite'                       => array(
-	                                            'slug' => $fields['slug_taxonomy'],
+	                                            'slug' => $this->fields['slug_taxonomy'],
 	                                            'with_front' => false ),
 		    'query_var'                     => true
 		);
 
-		register_taxonomy( $fields['name_taxonomy'], $fields['alias_taxonomy'], $args );
+		register_taxonomy( $this->fields['name_taxonomy'], $this->fields['alias_taxonomy'], $args );
 	}
 
 	public function createPostType() {
@@ -69,9 +70,21 @@ class CustomPostType
             'rewrite' =>  array('slug' => $this->fields['slug_post_taxonomy'],'with_front' => false ),
 	        'supports' => array('title', 'editor', 'excerpt', 'thumbnail'),
 	        'has_archive' => true,
-	        'taxonomies' => array($fields['name_taxonomy'], 'post_tag',)
+	        'taxonomies' => array($this->fields['name_taxonomy'], 'post_tag',)
 	       );
 
-	    register_post_type( $fields['alias_taxonomy'] , $args );
+	    register_post_type( $this->fields['alias_taxonomy'] , $args );
+	}
+
+	function security_edit_columns($columns){
+        $columns = array(
+            "cb" => "<input type=\"checkbox\" />",
+            "thumbnail" => "",
+            "title" => __($this->fields['singular_label'], "coo-theme-admin"),
+            "description" => __("Description", "coo-theme-admin"),
+            "security-category" => __("Categories", "coo-theme-admin")
+        );
+
+        return $columns;
 	}
 }
